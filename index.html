@@ -3,321 +3,428 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Klawy Mini Chat</title>
+<title>KLAWY Mini Chat</title>
 <style>
-  body { font-family: Arial, sans-serif; margin:0; background:#222; color:#eee; display:flex; height:100vh; }
-  #app { margin: auto; width: 360px; background:#333; border-radius:8px; overflow:hidden; box-shadow: 0 0 10px #000; }
-  header { background:#444; padding:10px; font-weight:bold; font-size:1.2em; }
-  #login, #register, #main { padding:15px; display:none; }
-  input, button { width: 100%; padding: 8px; margin: 5px 0; border-radius:4px; border:none; font-size:1em; }
-  button { background:#0a84ff; color:white; cursor:pointer; font-weight:bold; }
-  button:hover { background:#0066cc; }
-  #friends { max-height: 150px; overflow-y:auto; margin-bottom: 10px; border: 1px solid #555; border-radius: 4px; }
-  #friends div { padding:6px; cursor:pointer; border-bottom:1px solid #555; }
-  #friends div:hover { background:#555; }
-  #friends .selected { background:#0a84ff; color:#fff; }
-  #chat { height: 200px; overflow-y:auto; border: 1px solid #555; background:#111; padding:8px; border-radius: 4px; margin-bottom: 10px; }
-  #chat div { margin-bottom: 6px; }
-  #chat .me { text-align: right; color:#0f0; }
-  #chat .friend { text-align: left; color:#ff0; }
+  /* Temel renkler ve font */
+  :root {
+    --primary-color: #4a90e2;
+    --primary-dark: #357ABD;
+    --bg-color: #f0f4f8;
+    --text-color: #333;
+    --border-radius: 8px;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-color);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Giriş ekranı */
+  #login {
+    background: white;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    width: 320px;
+  }
+  #login h2 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  #login input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: var(--border-radius);
+    border: 1.5px solid #ccc;
+    font-size: 16px;
+    transition: border-color 0.3s;
+  }
+  #login input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+  }
+  #login button {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary-color);
+    border: none;
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  #login button:hover {
+    background: var(--primary-dark);
+  }
+
+  /* Ana uygulama */
+  #app {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  }
+
+  /* Sidebar: arkadaş listesi */
+  #sidebar {
+    width: 280px;
+    border-right: 1.5px solid #eee;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background: #fafafa;
+  }
+  #sidebar h3 {
+    margin: 0 0 15px 0;
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 22px;
+    text-align: center;
+  }
+  #friend-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 15px;
+  }
+  .friend {
+    padding: 10px 15px;
+    border-radius: var(--border-radius);
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-color);
+    background: #fff;
+    transition: background 0.3s;
+  }
+  .friend:hover {
+    background: var(--primary-color);
+    color: white;
+  }
+  .friend.selected {
+    background: var(--primary-color);
+    color: white;
+  }
+
+  /* Arkadaş ekleme formu */
+  #add-friend-form {
+    display: flex;
+    gap: 10px;
+  }
+  #add-friend-email {
+    flex-grow: 1;
+    padding: 10px;
+    border-radius: var(--border-radius);
+    border: 1.5px solid #ccc;
+    font-size: 16px;
+    transition: border-color 0.3s;
+  }
+  #add-friend-email:focus {
+    border-color: var(--primary-color);
+    outline: none;
+  }
+  #add-friend-btn {
+    padding: 0 18px;
+    border: none;
+    border-radius: var(--border-radius);
+    background: var(--primary-color);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  #add-friend-btn:hover {
+    background: var(--primary-dark);
+  }
+
+  /* Chat alanı */
+  #chat {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+  }
+  #chat-header {
+    font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 8px;
+  }
+  #chat-messages {
+    flex-grow: 1;
+    background: #f9f9f9;
+    border-radius: var(--border-radius);
+    padding: 15px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    font-size: 16px;
+  }
+  .message {
+    max-width: 70%;
+    margin-bottom: 10px;
+    padding: 10px 15px;
+    border-radius: var(--border-radius);
+    word-wrap: break-word;
+  }
+  .message.sent {
+    background: var(--primary-color);
+    color: white;
+    align-self: flex-end;
+    border-radius: var(--border-radius) var(--border-radius) var(--border-radius) 0;
+  }
+  .message.received {
+    background: #e0e0e0;
+    color: #333;
+    align-self: flex-start;
+    border-radius: var(--border-radius) var(--border-radius) 0 var(--border-radius);
+  }
+
+  /* Mesaj yazma */
+  #chat-input-area {
+    display: flex;
+    gap: 10px;
+  }
+  #chat-input {
+    flex-grow: 1;
+    padding: 12px 15px;
+    font-size: 16px;
+    border-radius: var(--border-radius);
+    border: 1.5px solid #ccc;
+    transition: border-color 0.3s;
+  }
+  #chat-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+  }
+  #chat-send-btn {
+    padding: 0 20px;
+    background: var(--primary-color);
+    border: none;
+    border-radius: var(--border-radius);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  #chat-send-btn:hover {
+    background: var(--primary-dark);
+  }
+
+  /* Responsive */
+  @media(max-width: 600px) {
+    #app {
+      flex-direction: column;
+      border-radius: 0;
+    }
+    #sidebar {
+      width: 100%;
+      height: 120px;
+      padding: 10px;
+      flex-direction: row;
+      overflow-x: auto;
+    }
+    #friend-list {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      overflow-x: auto;
+      margin-bottom: 0;
+    }
+    .friend {
+      flex: none;
+      padding: 8px 12px;
+      margin-bottom: 0;
+      font-size: 14px;
+    }
+    #chat {
+      flex-grow: 1;
+      height: calc(100vh - 120px);
+      padding: 15px;
+    }
+  }
 </style>
 </head>
 <body>
-  <div id="app">
-    <header>Klawy Mini Chat</header>
 
-    <section id="register">
-      <h3>Kayıt Ol</h3>
-      <input type="text" id="regUsername" placeholder="Kullanıcı Adı" />
-      <input type="password" id="regPassword" placeholder="Şifre" />
-      <button id="btnRegister">Kayıt Ol</button>
-      <p style="text-align:center; margin-top:10px; font-size:0.9em;">Zaten kayıtlı mısın? <a href="#" id="showLogin">Giriş Yap</a></p>
-      <p id="regMsg" style="color:#f66;"></p>
-    </section>
+<div id="login">
+  <h2>KLAWY Mini Chat</h2>
+  <input id="email" type="email" placeholder="Email adresiniz" required autocomplete="username" />
+  <input id="password" type="password" placeholder="Şifreniz" required autocomplete="current-password" />
+  <button id="login-btn">Giriş Yap</button>
+</div>
 
-    <section id="login">
-      <h3>Giriş Yap</h3>
-      <input type="text" id="loginUsername" placeholder="Kullanıcı Adı" />
-      <input type="password" id="loginPassword" placeholder="Şifre" />
-      <button id="btnLogin">Giriş Yap</button>
-      <p style="text-align:center; margin-top:10px; font-size:0.9em;">Hesabın yok mu? <a href="#" id="showRegister">Kayıt Ol</a></p>
-      <p id="loginMsg" style="color:#f66;"></p>
-    </section>
-
-    <section id="main">
-      <div><strong>Hoşgeldin, <span id="userDisplay"></span>! <button id="btnLogout" style="width:auto; padding:4px 10px; background:#f44;">Çıkış</button></strong></div>
-
-      <h4>Arkadaşlar</h4>
-      <div id="friends"></div>
-      <input type="text" id="friendName" placeholder="Arkadaş Ekle (Kullanıcı Adı)" />
-      <button id="btnAddFriend">Ekle</button>
-      <p id="friendMsg" style="color:#f66;"></p>
-
-      <h4>Chat</h4>
-      <div id="chat"></div>
-      <input type="text" id="messageInput" placeholder="Mesaj yaz..." />
-      <button id="btnSendMessage">Gönder</button>
-    </section>
+<div id="app">
+  <div id="sidebar">
+    <h3>Arkadaşlar</h3>
+    <div id="friend-list"></div>
+    <form id="add-friend-form">
+      <input id="add-friend-email" type="email" placeholder="Arkadaş emaili" required />
+      <button id="add-friend-btn" type="submit">Ekle</button>
+    </form>
   </div>
 
+  <div id="chat">
+    <div id="chat-header">Sohbet seçiniz</div>
+    <div id="chat-messages"></div>
+    <div id="chat-input-area">
+      <input id="chat-input" type="text" placeholder="Mesaj yaz..." disabled autocomplete="off" />
+      <button id="chat-send-btn" disabled>Gönder</button>
+    </div>
+  </div>
+</div>
+
 <script>
-(() => {
-  const lsUsersKey = 'klawy_users';
-  const lsLoggedKey = 'klawy_loggedIn';
+  (() => {
+    // Elementler
+    const loginDiv = document.getElementById('login');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginBtn = document.getElementById('login-btn');
 
-  function saveUsers(users) {
-    localStorage.setItem(lsUsersKey, JSON.stringify(users));
+    const appDiv = document.getElementById('app');
+    const friendListDiv = document.getElementById('friend-list');
+    const addFriendForm = document.getElementById('add-friend
+
+
+
+
+
+ChatGPT:
+-form');
+const addFriendEmailInput = document.getElementById('add-friend-email');
+
+javascript
+Kopyala
+Düzenle
+const chatHeader = document.getElementById('chat-header');
+const chatMessagesDiv = document.getElementById('chat-messages');
+const chatInput = document.getElementById('chat-input');
+const chatSendBtn = document.getElementById('chat-send-btn');
+
+// Kullanıcı ve veri
+let currentUser = null;
+let friends = [];
+let selectedFriend = null;
+let messages = {}; // { friendEmail: [ {from, text} ] }
+
+// Giriş yapma (demo)
+loginBtn.onclick = () => {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+  if(!email || !password) {
+    alert('Lütfen email ve şifre giriniz.');
+    return;
   }
-  function loadUsers() {
-    return JSON.parse(localStorage.getItem(lsUsersKey) || '[]');
-  }
-  function saveLoggedIn(username) {
-    localStorage.setItem(lsLoggedKey, username);
-  }
-  function loadLoggedIn() {
-    return localStorage.getItem(lsLoggedKey);
-  }
-  function getUser(username) {
-    return loadUsers().find(u => u.username === username);
-  }
-  function updateUser(user) {
-    const users = loadUsers();
-    const idx = users.findIndex(u => u.username === user.username);
-    if (idx !== -1) users[idx] = user;
-    else users.push(user);
-    saveUsers(users);
-  }
+  currentUser = { email };
 
-  const regSec = document.getElementById('register');
-  const loginSec = document.getElementById('login');
-  const mainSec = document.getElementById('main');
-
-  const regUserInput = document.getElementById('regUsername');
-  const regPassInput = document.getElementById('regPassword');
-  const regMsg = document.getElementById('regMsg');
-  const btnRegister = document.getElementById('btnRegister');
-
-  const loginUserInput = document.getElementById('loginUsername');
-  const loginPassInput = document.getElementById('loginPassword');
-  const loginMsg = document.getElementById('loginMsg');
-  const btnLogin = document.getElementById('btnLogin');
-
-  const userDisplay = document.getElementById('userDisplay');
-  const btnLogout = document.getElementById('btnLogout');
-
-  const friendsDiv = document.getElementById('friends');
-  const friendNameInput = document.getElementById('friendName');
-  const btnAddFriend = document.getElementById('btnAddFriend');
-  const friendMsg = document.getElementById('friendMsg');
-
-  const chatDiv = document.getElementById('chat');
-  const messageInput = document.getElementById('messageInput');
-  const btnSendMessage = document.getElementById('btnSendMessage');
-
-  const showLoginLink = document.getElementById('showLogin');
-  const showRegisterLink = document.getElementById('showRegister');
-
-  let loggedUser = null;
-  let selectedFriend = null;
-
-  async function hash(text) {
-    const msgUint8 = new TextEncoder().encode(text);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
-  }
-
-  function showSection(sec) {
-    regSec.style.display = 'none';
-    loginSec.style.display = 'none';
-    mainSec.style.display = 'none';
-    sec.style.display = 'block';
-  }
-
-  function refreshFriends() {
-    friendsDiv.innerHTML = '';
-    if (!loggedUser.friends.length) {
-      friendsDiv.innerHTML = '<i>Henüz arkadaş yok</i>';
-      selectedFriend = null;
-      refreshChat();
-      return;
-    }
-    loggedUser.friends.forEach(f => {
-      const div = document.createElement('div');
-      div.textContent = f;
-      div.className = (selectedFriend === f) ? 'selected' : '';
-      div.onclick = () => {
-        selectedFriend = f;
-        refreshFriends();
-        refreshChat();
-      };
-      friendsDiv.appendChild(div);
-    });
-  }
-
-  function refreshChat() {
-    chatDiv.innerHTML = '';
-    if (!selectedFriend) {
-      chatDiv.innerHTML = '<i>Bir arkadaş seç</i>';
-      return;
-    }
-    const msgs = (loggedUser.messages && loggedUser.messages[selectedFriend]) || [];
-    msgs.forEach(m => {
-      const d = document.createElement('div');
-      d.textContent = m.text;
-      d.className = (m.from === loggedUser.username) ? 'me' : 'friend';
-      chatDiv.appendChild(d);
-    });
-    chatDiv.scrollTop = chatDiv.scrollHeight;
-  }
-
-  btnRegister.onclick = async () => {
-    regMsg.style.color = '#f66';
-    regMsg.textContent = '';
-    const username = regUserInput.value.trim();
-    const password = regPassInput.value.trim();
-    if (!username || !password) {
-      regMsg.textContent = 'Eksik bilgi!';
-      return;
-    }
-    const users = loadUsers();
-    if(users.some(u => u.username === username)) {
-      regMsg.textContent = 'Kullanıcı mevcut!';
-      return;
-    }
-    const pwHash = await hash(password);
-    users.push({ username, passwordHash: pwHash, friends: [], messages: {} });
-    saveUsers(users);
-    regMsg.style.color = '#6f6';
-    regMsg.textContent = 'Kayıt başarılı! Giriş yapabilirsin.';
-    regUserInput.value = '';
-    regPassInput.value = '';
+  // Demo arkadaşlar
+  friends = [
+    { email: 'ali@example.com' },
+    { email: 'ayse@example.com' }
+  ];
+  messages = {
+    'ali@example.com': [],
+    'ayse@example.com': []
   };
 
-  btnLogin.onclick = async () => {
-    loginMsg.style.color = '#f66';
-    loginMsg.textContent = '';
-    const username = loginUserInput.value.trim();
-    const password = loginPassInput.value.trim();
-    if (!username || !password) {
-      loginMsg.textContent = 'Eksik bilgi!';
-      return;
+  loginDiv.style.display = 'none';
+  appDiv.style.display = 'flex';
+  renderFriendList();
+  updateChatHeader();
+};
+
+// Arkadaş listesi render
+function renderFriendList() {
+  friendListDiv.innerHTML = '';
+  friends.forEach(f => {
+    const div = document.createElement('div');
+    div.className = 'friend';
+    if(selectedFriend && selectedFriend.email === f.email) {
+      div.classList.add('selected');
     }
-    const user = getUser(username);
-    if(!user) {
-      loginMsg.textContent = 'Kullanıcı bulunamadı!';
-      return;
-    }
-    const pwHash = await hash(password);
-    if(pwHash !== user.passwordHash) {
-      loginMsg.textContent = 'Şifre yanlış!';
-      return;
-    }
-    loggedUser = user;
-    saveLoggedIn(loggedUser.username);
-    loginUserInput.value = '';
-    loginPassInput.value = '';
-    loginMsg.textContent = '';
-    startMain();
-  };
+    div.textContent = f.email.split('@')[0];
+    div.onclick = () => {
+      selectedFriend = f;
+      renderFriendList();
+      renderMessages();
+      updateChatHeader();
+      chatInput.disabled = false;
+      chatSendBtn.disabled = false;
+      chatInput.focus();
+    };
+    friendListDiv.appendChild(div);
+  });
+}
 
-  function startMain() {
-    userDisplay.textContent = loggedUser.username;
-    showSection(mainSec);
-    refreshFriends();
-    refreshChat();
-  }
+// Mesajlar render
+function renderMessages() {
+  chatMessagesDiv.innerHTML = '';
+  if(!selectedFriend) return;
+  const conv = messages[selectedFriend.email] || [];
+  conv.forEach(msg => {
+    const div = document.createElement('div');
+    div.className = 'message';
+    div.classList.add(msg.from === currentUser.email ? 'sent' : 'received');
+    div.textContent = msg.text;
+    chatMessagesDiv.appendChild(div);
+  });
+  chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+}
 
-  btnAddFriend.onclick = () => {
-    friendMsg.style.color = '#f66';
-    friendMsg.textContent = '';
-    const friendName = friendNameInput.value.trim();
-    if (!friendName) {
-      friendMsg.textContent = 'Arkadaş adı gir!';
-      return;
-    }
-    if(friendName === loggedUser.username) {
-      friendMsg.textContent = 'Kendini ekleyemezsin!';
-      return;
-    }
-    const friendUser = getUser(friendName);
-    if(!friendUser) {
-      friendMsg.textContent = 'Böyle bir kullanıcı yok!';
-      return;
-    }
-    if(loggedUser.friends.includes(friendName)) {
-      friendMsg.textContent = 'Zaten arkadaşsınız!';
-      return;
-    }
-    loggedUser.friends.push(friendName);
-    if(!loggedUser.messages) loggedUser.messages = {};
-    if(!loggedUser.messages[friendName]) loggedUser.messages[friendName] = [];
+// Chat başlık güncelle
+function updateChatHeader() {
+  chatHeader.textContent = selectedFriend ? `Sohbet: ${selectedFriend.email.split('@')[0]}` : 'Sohbet seçiniz';
+}
 
-    friendUser.friends.push(loggedUser.username);
-    if(!friendUser.messages) friendUser.messages = {};
-    if(!friendUser.messages[loggedUser.username]) friendUser.messages[loggedUser.username] = [];
-
-    updateUser(loggedUser);
-    updateUser(friendUser);
-    friendMsg.style.color = '#6f6';
-    friendMsg.textContent = 'Arkadaş eklendi!';
-    friendNameInput.value = '';
-    refreshFriends();
-  };
-
-  btnSendMessage.onclick = () => {
-    const text = messageInput.value.trim();
-    if (!text || !selectedFriend) return;
-
-    if(!loggedUser.messages) loggedUser.messages = {};
-    if(!loggedUser.messages[selectedFriend]) loggedUser.messages[selectedFriend] = [];
-    loggedUser.messages[selectedFriend].push({ from: loggedUser.username, text });
-
-    // Karşı tarafın mesajlarına da ekle
-    const friendUser = getUser(selectedFriend);
-    if(friendUser) {
-      if(!friendUser.messages) friendUser.messages = {};
-      if(!friendUser.messages[loggedUser.username]) friendUser.messages[loggedUser.username] = [];
-      friendUser.messages[loggedUser.username].push({ from: loggedUser.username, text });
-      updateUser(friendUser);
-    }
-
-    updateUser(loggedUser);
-    messageInput.value = '';
-    refreshChat();
-  };
-
-  btnLogout.onclick = () => {
-    loggedUser = null;
-    selectedFriend = null;
-    saveLoggedIn('');
-    showSection(loginSec);
-  };
-
-  showLoginLink.onclick = e => {
+// Mesaj gönderme
+chatSendBtn.onclick = () => {
+  sendMessage();
+};
+chatInput.onkeydown = e => {
+  if(e.key === 'Enter') {
     e.preventDefault();
-    showSection(loginSec);
-  };
+    sendMessage();
+  }
+};
+function sendMessage() {
+  if(!selectedFriend) return;
+  const text = chatInput.value.trim();
+  if(!text) return;
+  if(!messages[selectedFriend.email]) messages[selectedFriend.email] = [];
+  messages[selectedFriend.email].push({ from: currentUser.email, text });
+  chatInput.value = '';
+  renderMessages();
+}
 
-  showRegisterLink.onclick = e => {
-    e.preventDefault();
-    showSection(register);
-  };
-
-  // Sayfa açılınca eğer kayıtlı kullanıcı varsa direkt giriş yap
-  window.onload = () => {
-    const logged = loadLoggedIn();
-    if(logged) {
-      const user = getUser(logged);
-      if(user) {
-        loggedUser = user;
-        startMain();
-        return;
-      }
-    }
-    showSection(loginSec);
-  };
+// Arkadaş ekleme
+addFriendForm.onsubmit = e => {
+  e.preventDefault();
+  const email = addFriendEmailInput.value.trim();
+  if(!email) return alert('Email boş olamaz.');
+  if(friends.find(f => f.email === email)) return alert('Bu arkadaş zaten var.');
+  friends.push({ email });
+  messages[email] = [];
+  addFriendEmailInput.value = '';
+  renderFriendList();
+};
 })();
 </script>
-</body>
-</html>
+
+</body> </html>
