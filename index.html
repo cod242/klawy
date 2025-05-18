@@ -1,124 +1,323 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>KLAWY - Çocuk Giyim</title>
-  <style>
-    :root {
-      --primary: #ff6f61;
-      --bg: #f9f9f9;
-      --text: #333;
-      --radius: 12px;
-    }
-    * {
-      margin: 0; padding: 0; box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      padding: 2rem;
-    }
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    header h1 {
-      font-size: 2.5rem;
-      font-weight: bold;
-    }
-    header p {
-      color: #666;
-      margin-top: 0.5rem;
-    }
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-    .card {
-      background: #fff;
-      border-radius: var(--radius);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-      overflow: hidden;
-      transition: transform 0.2s ease;
-    }
-    .card:hover {
-      transform: translateY(-4px);
-    }
-    .card img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-    }
-    .card-content {
-      padding: 1rem;
-    }
-    .card-content h3 {
-      font-size: 1.1rem;
-      margin-bottom: 0.5rem;
-    }
-    .card-content p {
-      color: var(--primary);
-      font-weight: bold;
-    }
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 1.8rem;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Klawy Mini Chat</title>
+<style>
+  body { font-family: Arial, sans-serif; margin:0; background:#222; color:#eee; display:flex; height:100vh; }
+  #app { margin: auto; width: 360px; background:#333; border-radius:8px; overflow:hidden; box-shadow: 0 0 10px #000; }
+  header { background:#444; padding:10px; font-weight:bold; font-size:1.2em; }
+  #login, #register, #main { padding:15px; display:none; }
+  input, button { width: 100%; padding: 8px; margin: 5px 0; border-radius:4px; border:none; font-size:1em; }
+  button { background:#0a84ff; color:white; cursor:pointer; font-weight:bold; }
+  button:hover { background:#0066cc; }
+  #friends { max-height: 150px; overflow-y:auto; margin-bottom: 10px; border: 1px solid #555; border-radius: 4px; }
+  #friends div { padding:6px; cursor:pointer; border-bottom:1px solid #555; }
+  #friends div:hover { background:#555; }
+  #friends .selected { background:#0a84ff; color:#fff; }
+  #chat { height: 200px; overflow-y:auto; border: 1px solid #555; background:#111; padding:8px; border-radius: 4px; margin-bottom: 10px; }
+  #chat div { margin-bottom: 6px; }
+  #chat .me { text-align: right; color:#0f0; }
+  #chat .friend { text-align: left; color:#ff0; }
+</style>
 </head>
 <body>
+  <div id="app">
+    <header>Klawy Mini Chat</header>
 
-  <header>
-    <h1>KLAWY – Renkli ve Eğlenceli Çocuk Giyim</h1>
-    <p>Yeni sezon ürünler burada</p>
-  </header>
+    <section id="register">
+      <h3>Kayıt Ol</h3>
+      <input type="text" id="regUsername" placeholder="Kullanıcı Adı" />
+      <input type="password" id="regPassword" placeholder="Şifre" />
+      <button id="btnRegister">Kayıt Ol</button>
+      <p style="text-align:center; margin-top:10px; font-size:0.9em;">Zaten kayıtlı mısın? <a href="#" id="showLogin">Giriş Yap</a></p>
+      <p id="regMsg" style="color:#f66;"></p>
+    </section>
 
-  <section class="product-grid" id="products"></section>
+    <section id="login">
+      <h3>Giriş Yap</h3>
+      <input type="text" id="loginUsername" placeholder="Kullanıcı Adı" />
+      <input type="password" id="loginPassword" placeholder="Şifre" />
+      <button id="btnLogin">Giriş Yap</button>
+      <p style="text-align:center; margin-top:10px; font-size:0.9em;">Hesabın yok mu? <a href="#" id="showRegister">Kayıt Ol</a></p>
+      <p id="loginMsg" style="color:#f66;"></p>
+    </section>
 
-  <script>
-    const products = [
-      {
-        name: "Desenli Elbise",
-        price: "349₺",
-        image: "https://images.pexels.com/photos/1648379/pexels-photo-1648379.jpeg"
-      },
-      {
-        name: "Renkli Tişört",
-        price: "199₺",
-        image: "https://images.pexels.com/photos/1648378/pexels-photo-1648378.jpeg"
-      },
-      {
-        name: "Şort Takım",
-        price: "299₺",
-        image: "https://images.pexels.com/photos/1648377/pexels-photo-1648377.jpeg"
-      },
-      {
-        name: "Pembe Sweatshirt",
-        price: "249₺",
-        image: "https://images.pexels.com/photos/1648376/pexels-photo-1648376.jpeg"
-      }
-    ];
+    <section id="main">
+      <div><strong>Hoşgeldin, <span id="userDisplay"></span>! <button id="btnLogout" style="width:auto; padding:4px 10px; background:#f44;">Çıkış</button></strong></div>
 
-    const container = document.getElementById("products");
+      <h4>Arkadaşlar</h4>
+      <div id="friends"></div>
+      <input type="text" id="friendName" placeholder="Arkadaş Ekle (Kullanıcı Adı)" />
+      <button id="btnAddFriend">Ekle</button>
+      <p id="friendMsg" style="color:#f66;"></p>
 
-    products.forEach(p => {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <img src="${p.image}" alt="${p.name}">
-        <div class="card-content">
-          <h3>${p.name}</h3>
-          <p>${p.price}</p>
-        </div>
-      `;
-      container.appendChild(card);
+      <h4>Chat</h4>
+      <div id="chat"></div>
+      <input type="text" id="messageInput" placeholder="Mesaj yaz..." />
+      <button id="btnSendMessage">Gönder</button>
+    </section>
+  </div>
+
+<script>
+(() => {
+  const lsUsersKey = 'klawy_users';
+  const lsLoggedKey = 'klawy_loggedIn';
+
+  function saveUsers(users) {
+    localStorage.setItem(lsUsersKey, JSON.stringify(users));
+  }
+  function loadUsers() {
+    return JSON.parse(localStorage.getItem(lsUsersKey) || '[]');
+  }
+  function saveLoggedIn(username) {
+    localStorage.setItem(lsLoggedKey, username);
+  }
+  function loadLoggedIn() {
+    return localStorage.getItem(lsLoggedKey);
+  }
+  function getUser(username) {
+    return loadUsers().find(u => u.username === username);
+  }
+  function updateUser(user) {
+    const users = loadUsers();
+    const idx = users.findIndex(u => u.username === user.username);
+    if (idx !== -1) users[idx] = user;
+    else users.push(user);
+    saveUsers(users);
+  }
+
+  const regSec = document.getElementById('register');
+  const loginSec = document.getElementById('login');
+  const mainSec = document.getElementById('main');
+
+  const regUserInput = document.getElementById('regUsername');
+  const regPassInput = document.getElementById('regPassword');
+  const regMsg = document.getElementById('regMsg');
+  const btnRegister = document.getElementById('btnRegister');
+
+  const loginUserInput = document.getElementById('loginUsername');
+  const loginPassInput = document.getElementById('loginPassword');
+  const loginMsg = document.getElementById('loginMsg');
+  const btnLogin = document.getElementById('btnLogin');
+
+  const userDisplay = document.getElementById('userDisplay');
+  const btnLogout = document.getElementById('btnLogout');
+
+  const friendsDiv = document.getElementById('friends');
+  const friendNameInput = document.getElementById('friendName');
+  const btnAddFriend = document.getElementById('btnAddFriend');
+  const friendMsg = document.getElementById('friendMsg');
+
+  const chatDiv = document.getElementById('chat');
+  const messageInput = document.getElementById('messageInput');
+  const btnSendMessage = document.getElementById('btnSendMessage');
+
+  const showLoginLink = document.getElementById('showLogin');
+  const showRegisterLink = document.getElementById('showRegister');
+
+  let loggedUser = null;
+  let selectedFriend = null;
+
+  async function hash(text) {
+    const msgUint8 = new TextEncoder().encode(text);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  function showSection(sec) {
+    regSec.style.display = 'none';
+    loginSec.style.display = 'none';
+    mainSec.style.display = 'none';
+    sec.style.display = 'block';
+  }
+
+  function refreshFriends() {
+    friendsDiv.innerHTML = '';
+    if (!loggedUser.friends.length) {
+      friendsDiv.innerHTML = '<i>Henüz arkadaş yok</i>';
+      selectedFriend = null;
+      refreshChat();
+      return;
+    }
+    loggedUser.friends.forEach(f => {
+      const div = document.createElement('div');
+      div.textContent = f;
+      div.className = (selectedFriend === f) ? 'selected' : '';
+      div.onclick = () => {
+        selectedFriend = f;
+        refreshFriends();
+        refreshChat();
+      };
+      friendsDiv.appendChild(div);
     });
-  </script>
+  }
 
+  function refreshChat() {
+    chatDiv.innerHTML = '';
+    if (!selectedFriend) {
+      chatDiv.innerHTML = '<i>Bir arkadaş seç</i>';
+      return;
+    }
+    const msgs = (loggedUser.messages && loggedUser.messages[selectedFriend]) || [];
+    msgs.forEach(m => {
+      const d = document.createElement('div');
+      d.textContent = m.text;
+      d.className = (m.from === loggedUser.username) ? 'me' : 'friend';
+      chatDiv.appendChild(d);
+    });
+    chatDiv.scrollTop = chatDiv.scrollHeight;
+  }
+
+  btnRegister.onclick = async () => {
+    regMsg.style.color = '#f66';
+    regMsg.textContent = '';
+    const username = regUserInput.value.trim();
+    const password = regPassInput.value.trim();
+    if (!username || !password) {
+      regMsg.textContent = 'Eksik bilgi!';
+      return;
+    }
+    const users = loadUsers();
+    if(users.some(u => u.username === username)) {
+      regMsg.textContent = 'Kullanıcı mevcut!';
+      return;
+    }
+    const pwHash = await hash(password);
+    users.push({ username, passwordHash: pwHash, friends: [], messages: {} });
+    saveUsers(users);
+    regMsg.style.color = '#6f6';
+    regMsg.textContent = 'Kayıt başarılı! Giriş yapabilirsin.';
+    regUserInput.value = '';
+    regPassInput.value = '';
+  };
+
+  btnLogin.onclick = async () => {
+    loginMsg.style.color = '#f66';
+    loginMsg.textContent = '';
+    const username = loginUserInput.value.trim();
+    const password = loginPassInput.value.trim();
+    if (!username || !password) {
+      loginMsg.textContent = 'Eksik bilgi!';
+      return;
+    }
+    const user = getUser(username);
+    if(!user) {
+      loginMsg.textContent = 'Kullanıcı bulunamadı!';
+      return;
+    }
+    const pwHash = await hash(password);
+    if(pwHash !== user.passwordHash) {
+      loginMsg.textContent = 'Şifre yanlış!';
+      return;
+    }
+    loggedUser = user;
+    saveLoggedIn(loggedUser.username);
+    loginUserInput.value = '';
+    loginPassInput.value = '';
+    loginMsg.textContent = '';
+    startMain();
+  };
+
+  function startMain() {
+    userDisplay.textContent = loggedUser.username;
+    showSection(mainSec);
+    refreshFriends();
+    refreshChat();
+  }
+
+  btnAddFriend.onclick = () => {
+    friendMsg.style.color = '#f66';
+    friendMsg.textContent = '';
+    const friendName = friendNameInput.value.trim();
+    if (!friendName) {
+      friendMsg.textContent = 'Arkadaş adı gir!';
+      return;
+    }
+    if(friendName === loggedUser.username) {
+      friendMsg.textContent = 'Kendini ekleyemezsin!';
+      return;
+    }
+    const friendUser = getUser(friendName);
+    if(!friendUser) {
+      friendMsg.textContent = 'Böyle bir kullanıcı yok!';
+      return;
+    }
+    if(loggedUser.friends.includes(friendName)) {
+      friendMsg.textContent = 'Zaten arkadaşsınız!';
+      return;
+    }
+    loggedUser.friends.push(friendName);
+    if(!loggedUser.messages) loggedUser.messages = {};
+    if(!loggedUser.messages[friendName]) loggedUser.messages[friendName] = [];
+
+    friendUser.friends.push(loggedUser.username);
+    if(!friendUser.messages) friendUser.messages = {};
+    if(!friendUser.messages[loggedUser.username]) friendUser.messages[loggedUser.username] = [];
+
+    updateUser(loggedUser);
+    updateUser(friendUser);
+    friendMsg.style.color = '#6f6';
+    friendMsg.textContent = 'Arkadaş eklendi!';
+    friendNameInput.value = '';
+    refreshFriends();
+  };
+
+  btnSendMessage.onclick = () => {
+    const text = messageInput.value.trim();
+    if (!text || !selectedFriend) return;
+
+    if(!loggedUser.messages) loggedUser.messages = {};
+    if(!loggedUser.messages[selectedFriend]) loggedUser.messages[selectedFriend] = [];
+    loggedUser.messages[selectedFriend].push({ from: loggedUser.username, text });
+
+    // Karşı tarafın mesajlarına da ekle
+    const friendUser = getUser(selectedFriend);
+    if(friendUser) {
+      if(!friendUser.messages) friendUser.messages = {};
+      if(!friendUser.messages[loggedUser.username]) friendUser.messages[loggedUser.username] = [];
+      friendUser.messages[loggedUser.username].push({ from: loggedUser.username, text });
+      updateUser(friendUser);
+    }
+
+    updateUser(loggedUser);
+    messageInput.value = '';
+    refreshChat();
+  };
+
+  btnLogout.onclick = () => {
+    loggedUser = null;
+    selectedFriend = null;
+    saveLoggedIn('');
+    showSection(loginSec);
+  };
+
+  showLoginLink.onclick = e => {
+    e.preventDefault();
+    showSection(loginSec);
+  };
+
+  showRegisterLink.onclick = e => {
+    e.preventDefault();
+    showSection(register);
+  };
+
+  // Sayfa açılınca eğer kayıtlı kullanıcı varsa direkt giriş yap
+  window.onload = () => {
+    const logged = loadLoggedIn();
+    if(logged) {
+      const user = getUser(logged);
+      if(user) {
+        loggedUser = user;
+        startMain();
+        return;
+      }
+    }
+    showSection(loginSec);
+  };
+})();
+</script>
 </body>
 </html>
