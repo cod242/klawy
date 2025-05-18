@@ -1,430 +1,263 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>KLAWY Mini Chat</title>
-<style>
-  /* Temel renkler ve font */
-  :root {
-    --primary-color: #4a90e2;
-    --primary-dark: #357ABD;
-    --bg-color: #f0f4f8;
-    --text-color: #333;
-    --border-radius: 8px;
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-  body, html {
-    margin: 0; padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--bg-color);
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  /* Giriş ekranı */
-  #login {
-    background: white;
-    padding: 30px;
-    border-radius: var(--border-radius);
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    width: 320px;
-  }
-  #login h2 {
-    color: var(--primary-color);
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  #login input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border-radius: var(--border-radius);
-    border: 1.5px solid #ccc;
-    font-size: 16px;
-    transition: border-color 0.3s;
-  }
-  #login input:focus {
-    border-color: var(--primary-color);
-    outline: none;
-  }
-  #login button {
-    width: 100%;
-    padding: 12px;
-    background: var(--primary-color);
-    border: none;
-    color: white;
-    font-weight: 700;
-    font-size: 16px;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  #login button:hover {
-    background: var(--primary-dark);
-  }
-
-  /* Ana uygulama */
-  #app {
-    display: none;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    background: white;
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
-  }
-
-  /* Sidebar: arkadaş listesi */
-  #sidebar {
-    width: 280px;
-    border-right: 1.5px solid #eee;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    background: #fafafa;
-  }
-  #sidebar h3 {
-    margin: 0 0 15px 0;
-    color: var(--primary-color);
-    font-weight: 700;
-    font-size: 22px;
-    text-align: center;
-  }
-  #friend-list {
-    flex-grow: 1;
-    overflow-y: auto;
-    margin-bottom: 15px;
-  }
-  .friend {
-    padding: 10px 15px;
-    border-radius: var(--border-radius);
-    margin-bottom: 10px;
-    cursor: pointer;
-    font-weight: 600;
-    color: var(--text-color);
-    background: #fff;
-    transition: background 0.3s;
-  }
-  .friend:hover {
-    background: var(--primary-color);
-    color: white;
-  }
-  .friend.selected {
-    background: var(--primary-color);
-    color: white;
-  }
-
-  /* Arkadaş ekleme formu */
-  #add-friend-form {
-    display: flex;
-    gap: 10px;
-  }
-  #add-friend-email {
-    flex-grow: 1;
-    padding: 10px;
-    border-radius: var(--border-radius);
-    border: 1.5px solid #ccc;
-    font-size: 16px;
-    transition: border-color 0.3s;
-  }
-  #add-friend-email:focus {
-    border-color: var(--primary-color);
-    outline: none;
-  }
-  #add-friend-btn {
-    padding: 0 18px;
-    border: none;
-    border-radius: var(--border-radius);
-    background: var(--primary-color);
-    color: white;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  #add-friend-btn:hover {
-    background: var(--primary-dark);
-  }
-
-  /* Chat alanı */
-  #chat {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-  }
-  #chat-header {
-    font-weight: 700;
-    font-size: 24px;
-    margin-bottom: 15px;
-    color: var(--primary-color);
-    border-bottom: 2px solid var(--primary-color);
-    padding-bottom: 8px;
-  }
-  #chat-messages {
-    flex-grow: 1;
-    background: #f9f9f9;
-    border-radius: var(--border-radius);
-    padding: 15px;
-    overflow-y: auto;
-    margin-bottom: 15px;
-    font-size: 16px;
-  }
-  .message {
-    max-width: 70%;
-    margin-bottom: 10px;
-    padding: 10px 15px;
-    border-radius: var(--border-radius);
-    word-wrap: break-word;
-  }
-  .message.sent {
-    background: var(--primary-color);
-    color: white;
-    align-self: flex-end;
-    border-radius: var(--border-radius) var(--border-radius) var(--border-radius) 0;
-  }
-  .message.received {
-    background: #e0e0e0;
-    color: #333;
-    align-self: flex-start;
-    border-radius: var(--border-radius) var(--border-radius) 0 var(--border-radius);
-  }
-
-  /* Mesaj yazma */
-  #chat-input-area {
-    display: flex;
-    gap: 10px;
-  }
-  #chat-input {
-    flex-grow: 1;
-    padding: 12px 15px;
-    font-size: 16px;
-    border-radius: var(--border-radius);
-    border: 1.5px solid #ccc;
-    transition: border-color 0.3s;
-  }
-  #chat-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-  }
-  #chat-send-btn {
-    padding: 0 20px;
-    background: var(--primary-color);
-    border: none;
-    border-radius: var(--border-radius);
-    color: white;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  #chat-send-btn:hover {
-    background: var(--primary-dark);
-  }
-
-  /* Responsive */
-  @media(max-width: 600px) {
-    #app {
-      flex-direction: column;
-      border-radius: 0;
-    }
-    #sidebar {
-      width: 100%;
-      height: 120px;
-      padding: 10px;
-      flex-direction: row;
-      overflow-x: auto;
-    }
-    #friend-list {
-      display: flex;
-      flex-direction: row;
-      gap: 10px;
-      overflow-x: auto;
-      margin-bottom: 0;
-    }
-    .friend {
-      flex: none;
-      padding: 8px 12px;
-      margin-bottom: 0;
-      font-size: 14px;
-    }
-    #chat {
-      flex-grow: 1;
-      height: calc(100vh - 120px);
-      padding: 15px;
-    }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klawy Tarayıcı</title>
+    <style>
+        :root {
+            --klawy-primary: #5865F2;
+            --klawy-dark: #23272A;
+            --klawy-light: #FFFFFF;
+            --klawy-gray: #99AAB5;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .navbar {
+            background-color: var(--klawy-dark);
+            color: var(--klawy-light);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .logo {
+            font-weight: bold;
+            font-size: 20px;
+            margin-right: 15px;
+            color: var(--klawy-primary);
+        }
+        
+        .address-bar {
+            flex-grow: 1;
+            background-color: var(--klawy-light);
+            border-radius: 20px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        #url-input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            margin-left: 10px;
+        }
+        
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--klawy-light);
+            font-size: 18px;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        
+        .browser-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #browser-frame {
+            flex-grow: 1;
+            border: none;
+            background-color: white;
+        }
+        
+        .home-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            background-color: var(--klawy-dark);
+            color: var(--klawy-light);
+        }
+        
+        .home-screen h1 {
+            color: var(--klawy-primary);
+            margin-bottom: 20px;
+        }
+        
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .quick-link {
+            background-color: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quick-link:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+        
+        .status-bar {
+            background-color: var(--klawy-dark);
+            color: var(--klawy-light);
+            padding: 5px 10px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
 </head>
 <body>
-
-<div id="login">
-  <h2>KLAWY Mini Chat</h2>
-  <input id="email" type="email" placeholder="Email adresiniz" required autocomplete="username" />
-  <input id="password" type="password" placeholder="Şifreniz" required autocomplete="current-password" />
-  <button id="login-btn">Giriş Yap</button>
-</div>
-
-<div id="app">
-  <div id="sidebar">
-    <h3>Arkadaşlar</h3>
-    <div id="friend-list"></div>
-    <form id="add-friend-form">
-      <input id="add-friend-email" type="email" placeholder="Arkadaş emaili" required />
-      <button id="add-friend-btn" type="submit">Ekle</button>
-    </form>
-  </div>
-
-  <div id="chat">
-    <div id="chat-header">Sohbet seçiniz</div>
-    <div id="chat-messages"></div>
-    <div id="chat-input-area">
-      <input id="chat-input" type="text" placeholder="Mesaj yaz..." disabled autocomplete="off" />
-      <button id="chat-send-btn" disabled>Gönder</button>
+    <div class="navbar">
+        <div class="logo">Klawy</div>
+        <div class="address-bar">
+            <button class="nav-btn" id="back-btn">←</button>
+            <button class="nav-btn" id="forward-btn">→</button>
+            <button class="nav-btn" id="refresh-btn">↻</button>
+            <input type="text" id="url-input" placeholder="Arama yapın veya web adresi girin">
+            <button class="nav-btn" id="go-btn">Git</button>
+        </div>
+        <div class="nav-buttons">
+            <button class="nav-btn" id="home-btn">⌂</button>
+            <button class="nav-btn" id="menu-btn">☰</button>
+        </div>
     </div>
-  </div>
-</div>
+    
+    <div class="browser-container">
+        <iframe id="browser-frame" src="about:blank"></iframe>
+        <div class="home-screen" id="home-screen">
+            <h1>Klawy Tarayıcı</h1>
+            <p>Hızlı, güvenli ve özel tarayıcı deneyimi</p>
+            
+            <div class="quick-links">
+                <div class="quick-link" data-url="https://www.google.com">
+                    <div>Google</div>
+                </div>
+                <div class="quick-link" data-url="https://www.youtube.com">
+                    <div>YouTube</div>
+                </div>
+                <div class="quick-link" data-url="https://www.twitter.com">
+                    <div>Twitter</div>
+                </div>
+                <div class="quick-link" data-url="https://www.github.com">
+                    <div>GitHub</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="status-bar">
+        <div id="status-text">Hazır</div>
+        <div id="security-info">Güvenli</div>
+    </div>
 
-<script>
-  (() => {
-    // Elementler
-    const loginDiv = document.getElementById('login');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const loginBtn = document.getElementById('login-btn');
-
-    const appDiv = document.getElementById('app');
-    const friendListDiv = document.getElementById('friend-list');
-    const addFriendForm = document.getElementById('add-friend
-
-
-
-
-
-ChatGPT:
--form');
-const addFriendEmailInput = document.getElementById('add-friend-email');
-
-javascript
-Kopyala
-Düzenle
-const chatHeader = document.getElementById('chat-header');
-const chatMessagesDiv = document.getElementById('chat-messages');
-const chatInput = document.getElementById('chat-input');
-const chatSendBtn = document.getElementById('chat-send-btn');
-
-// Kullanıcı ve veri
-let currentUser = null;
-let friends = [];
-let selectedFriend = null;
-let messages = {}; // { friendEmail: [ {from, text} ] }
-
-// Giriş yapma (demo)
-loginBtn.onclick = () => {
-  const email = emailInput.value.trim();
-  const password = passwordInput.value.trim();
-  if(!email || !password) {
-    alert('Lütfen email ve şifre giriniz.');
-    return;
-  }
-  currentUser = { email };
-
-  // Demo arkadaşlar
-  friends = [
-    { email: 'ali@example.com' },
-    { email: 'ayse@example.com' }
-  ];
-  messages = {
-    'ali@example.com': [],
-    'ayse@example.com': []
-  };
-
-  loginDiv.style.display = 'none';
-  appDiv.style.display = 'flex';
-  renderFriendList();
-  updateChatHeader();
-};
-
-// Arkadaş listesi render
-function renderFriendList() {
-  friendListDiv.innerHTML = '';
-  friends.forEach(f => {
-    const div = document.createElement('div');
-    div.className = 'friend';
-    if(selectedFriend && selectedFriend.email === f.email) {
-      div.classList.add('selected');
-    }
-    div.textContent = f.email.split('@')[0];
-    div.onclick = () => {
-      selectedFriend = f;
-      renderFriendList();
-      renderMessages();
-      updateChatHeader();
-      chatInput.disabled = false;
-      chatSendBtn.disabled = false;
-      chatInput.focus();
-    };
-    friendListDiv.appendChild(div);
-  });
-}
-
-// Mesajlar render
-function renderMessages() {
-  chatMessagesDiv.innerHTML = '';
-  if(!selectedFriend) return;
-  const conv = messages[selectedFriend.email] || [];
-  conv.forEach(msg => {
-    const div = document.createElement('div');
-    div.className = 'message';
-    div.classList.add(msg.from === currentUser.email ? 'sent' : 'received');
-    div.textContent = msg.text;
-    chatMessagesDiv.appendChild(div);
-  });
-  chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
-}
-
-// Chat başlık güncelle
-function updateChatHeader() {
-  chatHeader.textContent = selectedFriend ? `Sohbet: ${selectedFriend.email.split('@')[0]}` : 'Sohbet seçiniz';
-}
-
-// Mesaj gönderme
-chatSendBtn.onclick = () => {
-  sendMessage();
-};
-chatInput.onkeydown = e => {
-  if(e.key === 'Enter') {
-    e.preventDefault();
-    sendMessage();
-  }
-};
-function sendMessage() {
-  if(!selectedFriend) return;
-  const text = chatInput.value.trim();
-  if(!text) return;
-  if(!messages[selectedFriend.email]) messages[selectedFriend.email] = [];
-  messages[selectedFriend.email].push({ from: currentUser.email, text });
-  chatInput.value = '';
-  renderMessages();
-}
-
-// Arkadaş ekleme
-addFriendForm.onsubmit = e => {
-  e.preventDefault();
-  const email = addFriendEmailInput.value.trim();
-  if(!email) return alert('Email boş olamaz.');
-  if(friends.find(f => f.email === email)) return alert('Bu arkadaş zaten var.');
-  friends.push({ email });
-  messages[email] = [];
-  addFriendEmailInput.value = '';
-  renderFriendList();
-};
-})();
-</script>
-
-</body> </html>
+    <script>
+        // Elementleri seçme
+        const browserFrame = document.getElementById('browser-frame');
+        const urlInput = document.getElementById('url-input');
+        const goBtn = document.getElementById('go-btn');
+        const backBtn = document.getElementById('back-btn');
+        const forwardBtn = document.getElementById('forward-btn');
+        const refreshBtn = document.getElementById('refresh-btn');
+        const homeBtn = document.getElementById('home-btn');
+        const homeScreen = document.getElementById('home-screen');
+        const statusText = document.getElementById('status-text');
+        const quickLinks = document.querySelectorAll('.quick-link');
+        
+        // URL yükleme fonksiyonu
+        function loadURL(url) {
+            if (!url) return;
+            
+            // HTTP/HTTPS kontrolü
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+            
+            statusText.textContent = "Yükleniyor...";
+            homeScreen.style.display = 'none';
+            browserFrame.style.display = 'block';
+            
+            try {
+                browserFrame.src = url;
+                urlInput.value = url;
+                
+                // Sayfa yüklendiğinde
+                browserFrame.onload = function() {
+                    statusText.textContent = "Yüklendi";
+                };
+            } catch (e) {
+                statusText.textContent = "Hata: " + e.message;
+            }
+        }
+        
+        // Buton eventleri
+        goBtn.addEventListener('click', () => {
+            loadURL(urlInput.value);
+        });
+        
+        urlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                loadURL(urlInput.value);
+            }
+        });
+        
+        backBtn.addEventListener('click', () => {
+            try {
+                browserFrame.contentWindow.history.back();
+            } catch (e) {
+                console.log("Geri gidilemiyor");
+            }
+        });
+        
+        forwardBtn.addEventListener('click', () => {
+            try {
+                browserFrame.contentWindow.history.forward();
+            } catch (e) {
+                console.log("İleri gidilemiyor");
+            }
+        });
+        
+        refreshBtn.addEventListener('click', () => {
+            browserFrame.contentWindow.location.reload();
+        });
+        
+        homeBtn.addEventListener('click', () => {
+            homeScreen.style.display = 'flex';
+            browserFrame.style.display = 'none';
+            browserFrame.src = 'about:blank';
+            urlInput.value = '';
+            statusText.textContent = "Hazır";
+        });
+        
+        // Hızlı linkler
+        quickLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                const url = link.getAttribute('data-url');
+                loadURL(url);
+            });
+        });
+        
+        // Başlangıçta ana ekranı göster
+        homeScreen.style.display = 'flex';
+        browserFrame.style.display = 'none';
+    </script>
+</body>
+</html>
