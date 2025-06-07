@@ -1,216 +1,183 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Klawy | Sohbet ve Topluluk Platformu</title>
-    <style>
-        :root {
-            --klawy-mavi: #5865F2;
-            --klawy-yesil: #57F287;
-            --klawy-sari: #FEE75C;
-            --klawy-kirmizi: #ED4245;
-            --koyu-arkaplan: #23272A;
-            --beyaz: #FFFFFF;
-            --gri: #99AAB5;
-        }
-
-        body {
-            font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            color: var(--beyaz);
-            background-color: var(--koyu-arkaplan);
-        }
-
-        .menu {
-            background-color: var(--koyu-arkaplan);
-            padding: 15px 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--beyaz);
-        }
-
-        .menu-linkler a {
-            color: var(--beyaz);
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: 500;
-        }
-
-        .giris-btn {
-            background-color: var(--beyaz);
-            color: var(--koyu-arkaplan);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        .onemli-bolum {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://discord.com/assets/1bee91d8d0dad596e7a4.svg');
-            background-size: cover;
-            padding: 100px 50px;
-            text-align: center;
-        }
-
-        .onemli-bolum h1 {
-            font-size: 56px;
-            margin-bottom: 20px;
-        }
-
-        .onemli-bolum p {
-            font-size: 20px;
-            max-width: 800px;
-            margin: 0 auto 30px;
-        }
-
-        .aksiyon-butonlari {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        .btn {
-            padding: 15px 30px;
-            border-radius: 28px;
-            font-weight: bold;
-            text-decoration: none;
-            font-size: 18px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .btn-ikincil {
-            background-color: var(--koyu-arkaplan);
-            color: var(--beyaz);
-            border: 1px solid var(--beyaz);
-        }
-
-        .btn-ikincil:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            transform: scale(1.1);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-        }
-
-        .ozellikler {
-            padding: 80px 50px;
-            text-align: center;
-        }
-
-        .ozellikler-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            margin-top: 50px;
-        }
-
-        .ozellik-karti {
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 30px;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .ozellik-karti:hover {
-            transform: translateY(-5px) scale(1.05);
-            background-color: rgba(255, 255, 255, 0.15);
-        }
-
-        footer {
-            background-color: #2C2F33;
-            padding: 50px;
-            text-align: center;
-        }
-
-        @media (max-width: 768px) {
-            .menu {
-                flex-direction: column;
-                padding: 15px 20px;
-            }
-            
-            .menu-linkler {
-                margin: 15px 0;
-            }
-            
-            .onemli-bolum h1 {
-                font-size: 36px;
-            }
-            
-            .ozellikler-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .aksiyon-butonlari {
-                flex-direction: column;
-                align-items: center;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KLAWY - Çocuk Giyim</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: url('https://www.sirkethaber.net/wp-content/uploads/2021/08/ataturkun-kisilik-ozellikleri-nelerdir.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 179, 71, 0.9);
+      padding: 1rem;
+      backdrop-filter: blur(5px);
+    }
+    .logo {
+      font-family: 'Bangers', cursive;
+      font-size: 2.5rem;
+      color: white;
+    }
+    .nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1rem;
+      margin: 0;
+      padding: 0;
+    }
+    .nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.2rem;
+    }
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 2rem;
+      color: white;
+    }
+    #hero {
+      text-align: center;
+      padding: 6rem 1rem;
+      background: rgba(255, 255, 255, 0.7);
+      margin: 2rem;
+      border-radius: 20px;
+      backdrop-filter: blur(5px);
+    }
+    #hero h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      font-family: 'Bangers', cursive;
+    }
+    #hero p {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    #hero button {
+      background: #FF69B4;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 30px;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    #categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.5rem;
+      padding: 3rem;
+      margin: 2rem;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 20px;
+      backdrop-filter: blur(5px);
+    }
+    .category {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      text-align: center;
+      padding: 1.5rem;
+      transition: transform 0.3s;
+    }
+    .category:hover {
+      transform: scale(1.05);
+    }
+    .category img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+    }
+    .category h2 {
+      margin-top: 1rem;
+      color: #333;
+      font-size: 1.3rem;
+    }
+    @media (max-width: 768px) {
+      .nav ul {
+        display: none;
+      }
+      .nav ul.active {
+        display: flex;
+        flex-direction: column;
+        background: rgba(255, 179, 71, 0.95);
+        position: absolute;
+        top: 70px;
+        right: 10px;
+        padding: 1rem;
+        border-radius: 10px;
+      }
+      .menu-toggle {
+        display: block;
+      }
+    }
+  </style>
 </head>
 <body>
-    <nav class="menu">
-        <div class="logo">Klawy</div>
-        <div class="menu-linkler">
-            <a href="#">İndir</a>
-            <a href="#">Premium</a>
-            <a href="#">Keşfet</a>
-            <a href="#">Güvenlik</a>
-            <a href="#">Destek</a>
-        </div>
-        <a href="#" class="giris-btn">Giriş Yap</a>
-    </nav>
 
-    <section class="onemli-bolum">
-        <h1>HAYAL ET BİR YER...</h1>
-        <p>...okul kulübünüzün, bir oyun grubunun ya da dünya çapında bir sanat topluluğunun parçası olabileceğiniz bir yer. Sadece birkaç arkadaşınızla birlikte vakit geçirebileceğiniz bir yer. Her gün konuşmayı ve daha sık takılmayı kolaylaştıran bir yer.</p>
-        <div class="aksiyon-butonlari">
-            <button class="btn btn-ikincil" onclick="window.open('https://cod242.github.io/login/', '_blank')">Klawy'ı Tarayıcıda Aç</button>
-        </div>
-    </section>
+<header>
+  <div class="logo">KLAWY</div>
+  <nav class="nav">
+    <ul>
+      <li><a href="t-shirts.html">Tişörtler</a></li>
+      <li><a href="pants.html">Pantolonlar</a></li>
+      <li><a href="dresses.html">Elbiseler</a></li>
+      <li><a href="shoes.html">Ayakkabılar</a></li>
+    </ul>
+  </nav>
+  <button class="menu-toggle">☰</button>
+</header>
 
-    <section class="ozellikler">
-        <h2>Yakın kalmak için güvenilir teknoloji</h2>
-        <p>Düşük gecikmeli ses ve video ile aynı odadaymışsınız gibi hissedin. Videoda el sallayın, arkadaşlarınızın oyunlarını izleyin ya da ekran paylaşımıyla birlikte çizim yapın.</p>
-        <div class="ozellikler-grid">
-            <div class="ozellik-karti">
-                <h3>🎮 Oyun Dostu</h3>
-                <p>Oyun içi ses ayarları ve düşük gecikme ile rahat iletişim.</p>
-            </div>
-            <div class="ozellik-karti">
-                <h3>🤖 Bot Desteği</h3>
-                <p>Müzik, moderasyon ve eğlence botları ile sunucunuzu özelleştirin.</p>
-            </div>
-            <div class="ozellik-karti">
-                <h3>🔒 Güvenli Ortam</h3>
-                <p>Gelişmiş moderasyon araçları ve güvenlik önlemleri.</p>
-            </div>
-        </div>
-    </section>
+<main>
+  <section id="hero">
+    <h1>Çocuklar İçin Neşeli Stiller</h1>
+    <p>KLAWY ile her gün bir eğlence!</p>
+    <button>Hemen Keşfet</button>
+  </section>
 
-    <footer>
-        <p>© 2023 Klawy Inc. Tüm hakları saklıdır.</p>
-    </footer>
+  <section id="categories">
+    <article class="category">
+      <a href="t-shirts.html">
+        <img src="https://bayeks.com/urunler/1883/large_5214-1-copy.jpg" alt="Tişörtler">
+        <h2>Tişörtler</h2>
+      </a>
+    </article>
+    <article class="category">
+      <a href="pants.html">
+        <img src="https://via.placeholder.com/150" alt="Pantolonlar">
+        <h2>Pantolonlar</h2>
+      </a>
+    </article>
+    <article class="category">
+      <a href="dresses.html">
+        <img src="https://via.placeholder.com/150" alt="Elbiseler">
+        <h2>Elbiseler</h2>
+      </a>
+    </article>
+    <article class="category">
+      <a href="shoes.html">
+        <img src="https://via.placeholder.com/150" alt="Ayakkabılar">
+        <h2>Ayakkabılar</h2>
+      </a>
+    </article>
+  </section>
+</main>
 
-    <script>
-        document.querySelector('.giris-btn').addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('Giriş sayfasına yönlendirileceksiniz!');
-        });
+<script>
+  const menuToggle = document.querySelector('.menu-toggle');
+  const navLinks = document.querySelector('.nav ul');
+  menuToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+  });
+</script>
 
-        document.querySelectorAll('.menu-linkler a').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                alert(`${this.textContent} sayfasına gidilecek!`);
-            });
-        });
-    </script>
 </body>
 </html>
